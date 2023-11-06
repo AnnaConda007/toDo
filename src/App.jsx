@@ -8,36 +8,48 @@ const App = () => {
   const [sortBy, setSortBy] = useState("finishDate");
 
   useEffect(() => {
+    const tasksFromStorage = JSON.parse(localStorage.getItem("tasks"));
+    if (tasksFromStorage) {
+      setTasks(tasksFromStorage);
+    }
+  }, []);
+
+  useEffect(() => {
     checkTime(tasks);
   }, [tasks]);
 
   const addTask = (task) => {
-    setTasks([task, ...tasks]);
+    const newTasks = [task, ...tasks];
+    setTasks(newTasks);
+    localStorage.setItem("tasks", JSON.stringify(newTasks));
   };
 
   const toggleComplete = (taskId) => {
-    setTasks(
-      tasks.map((task) => {
-        if (task.id === taskId) {
-          return { ...task, completed: !task.completed };
-        }
-        return task;
-      })
-    );
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        return { ...task, completed: !task.completed };
+      }
+      return task;
+    });
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
   };
 
   const removeTask = (taskId) => {
-    setTasks(tasks.filter((task) => task.id !== taskId));
+    const remainingTasks = tasks.filter((task) => task.id !== taskId);
+    setTasks(remainingTasks);
+    localStorage.setItem("tasks", JSON.stringify(remainingTasks));
   };
+
   const updateTask = (taskId, updatedTaskInfo) => {
-    setTasks(
-      tasks.map((task) => {
-        if (task.id === taskId) {
-          return { ...task, ...updatedTaskInfo };
-        }
-        return task;
-      })
-    );
+    const updatedTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        return { ...task, ...updatedTaskInfo };
+      }
+      return task;
+    });
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
   };
 
   return (
